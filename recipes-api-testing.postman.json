@@ -1,0 +1,125 @@
+{
+    "info": {
+        "_postman_id": "a0ccee82-6583-4789-9ed9-9ebc332a690b",
+        "name": "Recipes API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "List Recipes",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/recipes",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "recipes"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Recipe",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"title\": \"Recipe Title\",\n  \"description\": \"Recipe Description\",\n  \"ingredients\": \"Ingredient 1, Ingredient 2\",\n  \"instructions\": \"Step 1, Step 2\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/recipes",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "recipes"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Recipe",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/recipes/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "recipes",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Recipe",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"title\": \"Updated Recipe Title\",\n  \"description\": \"Updated Recipe Description\",\n  \"ingredients\": \"Updated Ingredient 1, Updated Ingredient 2\",\n  \"instructions\": \"Updated Step 1, Updated Step 2\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/recipes/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "recipes",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Recipe",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/recipes/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "recipes",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
