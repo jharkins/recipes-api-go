@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -37,14 +38,37 @@ func startServer() {
 	r := gin.Default()
 	api := r.Group("/api")
 
-	recipe := api.Group("/recipe")
+	public := api.Group("/recipe")
 	{
-		recipe.POST("/", createRecipe)
-		recipe.GET("/:id", getRecipe)
-		recipe.PUT("/:id", updateRecipe)
-		recipe.DELETE("/:id", deleteRecipe)
-		recipe.GET("/", listRecipes)
+		public.GET("/", listRecipes)
+		public.GET("/:id", getRecipe)
+	}
+
+	private := api.Group("/recipe")
+	private.Use(authMiddleware())
+	{
+		private.POST("/", createRecipe)
+		private.PUT("/:id", updateRecipe)
+		private.DELETE("/:id", deleteRecipe)
 	}
 
 	r.Run() // Default: ":8080"
+}
+
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Check if the user is authenticated
+		if isUserAuthenticated(c.Request) {
+			// User is authenticated, call the next middleware
+			c.Next()
+		} else {
+			// User is not authenticated, return a 401 Unauthorized response
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		}
+	}
+}
+
+func isUserAuthenticated(r *http.Request) bool {
+	// Check if the user is authenticated
+	return false
 }
