@@ -39,6 +39,13 @@ func initConfig() {
 
 	viper.SetEnvPrefix("RECIPES")
 	viper.AutomaticEnv() // Automatically read environment variables
+
+	// Bind the environment variables to the Viper keys
+	viper.BindEnv("mysql.user", "RECIPES_MYSQL_USER")
+	viper.BindEnv("mysql.password", "RECIPES_MYSQL_PASSWORD")
+	viper.BindEnv("mysql.host", "RECIPES_MYSQL_HOST")
+	viper.BindEnv("mysql.port", "RECIPES_MYSQL_PORT")
+	viper.BindEnv("mysql.database", "RECIPES_MYSQL_DATABASE")
 }
 
 func startServer() {
