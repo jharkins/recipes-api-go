@@ -34,18 +34,26 @@ func initDB() {
 	port := viper.GetInt("mysql.port")
 	database := viper.GetString("mysql.database")
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, password, host, port, database)
+	dataSourceName := buildDSN(user, password, host, port, database)
 
 	var err error
 	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		fmt.Printf("Error opening database connection: %s\n", err)
+		redactedDSN := buildDSN(user, "REDACTED", host, port, database)
+		fmt.Printf("DSN: %s\n", redactedDSN)
 		os.Exit(1)
 	}
 
 	err = db.Ping()
 	if err != nil {
 		fmt.Printf("Error pinging database: %s\n", err)
+		redactedDSN := buildDSN(user, "REDACTED", host, port, database)
+		fmt.Printf("DSN: %s\n", redactedDSN)
 		os.Exit(1)
 	}
+}
+
+func buildDSN(user, password, host string, port int, database string) string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, password, host, port, database)
 }
