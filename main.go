@@ -32,6 +32,9 @@ func initConfig() {
 		fmt.Printf("Error reading config file: %s\n", err)
 		os.Exit(1)
 	}
+
+	viper.SetEnvPrefix("RECIPES")
+	viper.AutomaticEnv() // Automatically read environment variables
 }
 
 func startServer() {

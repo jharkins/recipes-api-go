@@ -50,7 +50,7 @@ func getRecipe(c *gin.Context) {
 }
 
 func getRandomRecipe(c *gin.Context) {
-	row := db.QueryRow("SELECT * FROM recipe ORDER BY RANDOM() LIMIT 1")
+	row := db.QueryRow("SELECT * FROM recipe ORDER BY RAND() LIMIT 1")
 	var r Recipe
 	err := row.Scan(&r.ID, &r.Name, &r.EnoughFor, &r.Origin, &r.Ingredients, &r.Description, &r.Kind, &r.PrepTime, &r.Difficulty, &r.Notes, &r.CookTime, &r.ServingSize, &r.Rating)
 
@@ -108,7 +108,20 @@ func deleteRecipe(c *gin.Context) {
 }
 
 func listRecipes(c *gin.Context) {
-	rows, err := db.Query("SELECT * FROM recipe")
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if err != nil || page < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page number"})
+		return
+	}
+
+	pageSize, err := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	if err != nil || pageSize < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page size"})
+		return
+	}
+
+	offset := (page - 1) * pageSize
+	rows, err := db.Query("SELECT * FROM recipe WHERE name <> '' ORDER BY recipe.name LIMIT ? OFFSET ?", pageSize, offset)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -132,5 +145,17 @@ func listRecipes(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, recipes)
+	var totalCount int
+	err = db.QueryRow("SELECT COUNT(*) FROM recipe").Scan(&totalCount)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"recipes":  recipes,
+		"total":    totalCount,
+		"page":     page,
+		"pageSize": pageSize,
+	})
 }
