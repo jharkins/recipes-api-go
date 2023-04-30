@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -36,12 +37,14 @@ func initConfig() {
 func startServer() {
 	initDB()
 	r := gin.Default()
+	r.Use(cors.Default())
 	api := r.Group("/api")
 
 	public := api.Group("/recipe")
 	{
 		public.GET("/", listRecipes)
 		public.GET("/:id", getRecipe)
+		public.GET("/random", getRandomRecipe)
 	}
 
 	private := api.Group("/recipe")

@@ -49,6 +49,23 @@ func getRecipe(c *gin.Context) {
 	c.JSON(http.StatusOK, r)
 }
 
+func getRandomRecipe(c *gin.Context) {
+	row := db.QueryRow("SELECT * FROM recipe ORDER BY RANDOM() LIMIT 1")
+	var r Recipe
+	err := row.Scan(&r.ID, &r.Name, &r.EnoughFor, &r.Origin, &r.Ingredients, &r.Description, &r.Kind, &r.PrepTime, &r.Difficulty, &r.Notes, &r.CookTime, &r.ServingSize, &r.Rating)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "No recipes found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, r)
+}
+
 func updateRecipe(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
