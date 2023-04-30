@@ -29,8 +29,12 @@ func initConfig() {
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Printf("Error reading config file: %s\n", err)
-		os.Exit(1)
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			// It's not a "file not found" error, so it's a genuine issue with the config file
+			fmt.Printf("Error reading config file: %s\n", err)
+			os.Exit(1)
+		}
+		// If it's a "file not found" error, we just continue and rely on environment variables
 	}
 
 	viper.SetEnvPrefix("RECIPES")
