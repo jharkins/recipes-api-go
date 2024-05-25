@@ -89,6 +89,22 @@ Deletes a recipe by ID.
 curl --location --request DELETE 'http://localhost:8080/api/recipe/1'
 ```
 
+### GET /api/recipe/random
+
+Gets a random recipe.
+
+```bash
+curl --location --request GET 'http://localhost:8080/api/recipe/random'
+```
+
+### GET /api/recipe/search?term={term}
+
+Searches for recipes by a search term.
+
+```bash
+curl --location --request GET 'http://localhost:8080/api/recipe/search?term=spaghetti'
+```
+
 ## Credits
 
 Created by Joe Harkins ([jharkins](https://github.com/jharkins)) and [OpenAI's ChatGPT](https://www.openai.com/).
