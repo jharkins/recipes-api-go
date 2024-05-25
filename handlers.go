@@ -159,3 +159,39 @@ func listRecipes(c *gin.Context) {
 		"pageSize": pageSize,
 	})
 }
+
+func searchRecipesHandler(c *gin.Context) {
+	// Extract the search term from the query string
+	term := c.Query("term")
+	if term == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing search term"})
+		return
+	}
+
+	// Prepare and execute the SQL statement
+	stmt := `SELECT * FROM recipe WHERE name LIKE ? OR ingredients LIKE ? OR description LIKE ?`
+	rows, err := db.Query(stmt, "%"+term+"%", "%"+term+"%", "%"+term+"%")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var recipes []Recipe
+	for rows.Next() {
+		var r Recipe
+		if err := rows.Scan(&r.ID, &r.Name, &r.EnoughFor, &r.Origin, &r.Ingredients, &r.Description, &r.Kind, &r.PrepTime, &r.Difficulty, &r.Notes, &r.CookTime, &r.ServingSize, &r.Rating); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		recipes = append(recipes, r)
+	}
+
+	if err := rows.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Send the resulting recipes as JSON
+	c.JSON(http.StatusOK, recipes)
+}

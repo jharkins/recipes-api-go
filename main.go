@@ -59,6 +59,7 @@ func startServer() {
 		public.GET("/", listRecipes)
 		public.GET("/:id", getRecipe)
 		public.GET("/random", getRandomRecipe)
+		public.GET("/search-recipes", searchRecipesHandler)
 	}
 
 	private := api.Group("/recipe")
